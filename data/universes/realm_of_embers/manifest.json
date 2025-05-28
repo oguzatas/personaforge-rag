@@ -1,0 +1,14 @@
+{
+  "universe_name": "realm_of_embers",
+  "description": "A world of fire and ancient magic.",
+  "roles": [
+    {
+      "name": "blacksmith",
+      "description": "A master of forging weapons and armor."
+    },
+    {
+      "name": "sorcerer",
+      "description": "A wielder of arcane fire."
+    }
+  ]
+} 

@@ -1,0 +1,93 @@
+import json
+from pathlib import Path
+from typing import List, Dict, Any
+
+data_required_fields = ["universe_name", "description", "roles"]
+role_required_fields = ["name", "description"]
+char_required_fields = ["name", "role", "universe", "inventory", "current_mood", "backstory", "location"]
+mood_required_fields = ["primary_emotion", "intensity", "plutchik_axis"]
+
+DATA_DIR = Path("data")
+
+def validate_universe_manifest(manifest: dict):
+    for field in data_required_fields:
+        if field not in manifest:
+            raise ValueError(f"Universe manifest missing required field: {field}")
+    for role in manifest["roles"]:
+        for rfield in role_required_fields:
+            if rfield not in role:
+                raise ValueError(f"Role missing required field: {rfield}")
+
+def validate_character_manifest(char: dict):
+    for field in char_required_fields:
+        if field not in char:
+            raise ValueError(f"Character manifest missing required field: {field}")
+    mood = char["current_mood"]
+    for mfield in mood_required_fields:
+        if mfield not in mood:
+            raise ValueError(f"Character mood missing required field: {mfield}")
+
+def list_universes():
+    DATA_DIR.mkdir(exist_ok=True)
+    return [d.name for d in DATA_DIR.iterdir() if d.is_dir()]
+
+def create_universe(universe_data: Dict[str, Any]) -> None:
+    """Create a new universe with manifest."""
+    validate_universe_manifest(universe_data)
+    universe_name = universe_data["universe_name"]
+    universe_dir = DATA_DIR / universe_name
+    universe_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Create characters directory
+    (universe_dir / "characters").mkdir(exist_ok=True)
+    
+    # Create faiss_index directory
+    (universe_dir / "faiss_index").mkdir(exist_ok=True)
+    
+    # Save manifest
+    manifest_path = universe_dir / "manifest.json"
+    with open(manifest_path, "w", encoding="utf-8") as f:
+        json.dump(universe_data, f, indent=2, ensure_ascii=False)
+
+def load_universe_manifest(universe: str):
+    manifest_path = DATA_DIR / universe / "manifest.json"
+    if not manifest_path.exists():
+        raise FileNotFoundError(f"Universe '{universe}' not found")
+    
+    with open(manifest_path, encoding="utf-8") as f:
+        manifest = json.load(f)
+    validate_universe_manifest(manifest)
+    return manifest
+
+def create_character(character_data: Dict[str, Any]) -> None:
+    """Create a new character."""
+    validate_character_manifest(character_data)
+    universe = character_data["universe"]
+    char_name = character_data["name"].lower().replace(" ", "_")
+    
+    char_dir = DATA_DIR / universe / "characters"
+    char_path = char_dir / f"{char_name}.json"
+    
+    with open(char_path, "w", encoding="utf-8") as f:
+        json.dump(character_data, f, indent=2, ensure_ascii=False)
+
+def load_characters(universe: str):
+    char_dir = DATA_DIR / universe / "characters"
+    if not char_dir.exists():
+        return []
+    
+    characters = []
+    for char_file in char_dir.glob("*.json"):
+        with open(char_file, encoding="utf-8") as f:
+            char = json.load(f)
+            validate_character_manifest(char)
+            characters.append(char)
+    return characters
+
+def get_character_by_name(universe: str, character_name: str) -> Dict[str, Any]:
+    """Get a specific character by name."""
+    characters = load_characters(universe)
+    for char in characters:
+        if char["name"].lower() == character_name.lower():
+            return char
+    raise ValueError(f"Character '{character_name}' not found in universe '{universe}'") 
