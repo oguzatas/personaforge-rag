@@ -7,11 +7,11 @@ from app.character import Character
 
 def answer_question(query: str, universe: str, character: Character, debug: bool = False) -> dict:
     """Answer a question using RAG with optional debugging information."""
-    # Get relevant context chunks
-    context_chunks = get_relevant_docs_for_universe(query, universe)
+    # Get relevant context chunks (limit to 3 for smaller models)
+    context_chunks = get_relevant_docs_for_universe(query, universe, k=3)
     
-    # Create simple character description
-    character_desc = f"I am {character.name}, a {character.role} from {character.location}. My backstory: {character.backstory}"
+    # Create very concise character description
+    character_desc = f"{character.name}, a {character.role} from {character.location}"
     
     # Format the full prompt
     full_prompt = format_prompt(query, context_chunks, character_desc)
