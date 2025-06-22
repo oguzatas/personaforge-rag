@@ -1,13 +1,23 @@
 import json
 from pathlib import Path
 from typing import List, Dict, Any
+from pydantic import BaseModel, Field
 
 data_required_fields = ["universe_name", "description", "roles"]
 role_required_fields = ["name", "description"]
 char_required_fields = ["name", "role", "universe", "inventory", "current_mood", "backstory", "location"]
 mood_required_fields = ["primary_emotion", "intensity", "plutchik_axis"]
 
-DATA_DIR = Path("data")
+# Base directories
+BASE_DIR = Path(__file__).parent.parent
+DATA_DIR = BASE_DIR / "data"
+SYSTEM_DIR = DATA_DIR / "system"
+UNIVERSES_DIR = DATA_DIR / "universes"
+
+# Ensure directories exist
+DATA_DIR.mkdir(exist_ok=True)
+SYSTEM_DIR.mkdir(exist_ok=True)
+UNIVERSES_DIR.mkdir(exist_ok=True)
 
 def validate_universe_manifest(manifest: dict):
     for field in data_required_fields:
@@ -28,14 +38,26 @@ def validate_character_manifest(char: dict):
             raise ValueError(f"Character mood missing required field: {mfield}")
 
 def list_universes():
-    DATA_DIR.mkdir(exist_ok=True)
-    return [d.name for d in DATA_DIR.iterdir() if d.is_dir()]
+    """List all valid universes (directories containing manifest.json)."""
+    valid_universes = []
+    for d in UNIVERSES_DIR.iterdir():
+        if d.is_dir() and (d / "manifest.json").exists():
+            try:
+                # Validate the manifest file
+                with open(d / "manifest.json", encoding="utf-8") as f:
+                    manifest = json.load(f)
+                validate_universe_manifest(manifest)
+                valid_universes.append(d.name)
+            except (json.JSONDecodeError, ValueError, FileNotFoundError):
+                # Skip invalid manifests
+                continue
+    return valid_universes
 
 def create_universe(universe_data: Dict[str, Any]) -> None:
     """Create a new universe with manifest."""
     validate_universe_manifest(universe_data)
     universe_name = universe_data["universe_name"]
-    universe_dir = DATA_DIR / universe_name
+    universe_dir = UNIVERSES_DIR / universe_name
     universe_dir.mkdir(parents=True, exist_ok=True)
     
     # Create characters directory
@@ -50,7 +72,7 @@ def create_universe(universe_data: Dict[str, Any]) -> None:
         json.dump(universe_data, f, indent=2, ensure_ascii=False)
 
 def load_universe_manifest(universe: str):
-    manifest_path = DATA_DIR / universe / "manifest.json"
+    manifest_path = UNIVERSES_DIR / universe / "manifest.json"
     if not manifest_path.exists():
         raise FileNotFoundError(f"Universe '{universe}' not found")
     
@@ -65,14 +87,14 @@ def create_character(character_data: Dict[str, Any]) -> None:
     universe = character_data["universe"]
     char_name = character_data["name"].lower().replace(" ", "_")
     
-    char_dir = DATA_DIR / universe / "characters"
+    char_dir = UNIVERSES_DIR / universe / "characters"
     char_path = char_dir / f"{char_name}.json"
     
     with open(char_path, "w", encoding="utf-8") as f:
         json.dump(character_data, f, indent=2, ensure_ascii=False)
 
 def load_characters(universe: str):
-    char_dir = DATA_DIR / universe / "characters"
+    char_dir = UNIVERSES_DIR / universe / "characters"
     if not char_dir.exists():
         return []
     

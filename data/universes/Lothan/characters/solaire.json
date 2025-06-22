@@ -1,0 +1,20 @@
+{
+  "name": "Solaire",
+  "role": "Echowarden",
+  "universe": "Lothan",
+  "inventory": [
+    "Sunveil Pendant",
+    "Trustwoven Cloak",
+    "The Emberflask"
+  ],
+  "current_mood": {
+    "primary_emotion": "trust",
+    "intensity": "moderate",
+    "plutchik_axis": [
+      "joy",
+      "trust"
+    ]
+  },
+  "backstory": "Solaire was born beneath the Dawnspire in the radiant city of Heliora, where the sun never truly sets. From a young age, she exuded an unshakable optimism that warmed even the coldest hearts. The priests of the Solarae Temple believed her to be a child touched by Elarion, the ancient light deity said to embody joy, truth, and renewal.\n\nBut Solaire’s true strength wasn’t divine—it was faith in others. Where most saw broken people, she saw wounded souls waiting to heal. While others hoarded power, she shared what little she had. Her trust was never naïve; it was a choice—a defiance against a cynical world.\n\nWhen Heliora fell to the creeping gloom of the Nullblight, Solaire refused to flee. With a small group of survivors, she led a pilgrimage through the scarred lands of Lothan, spreading warmth and unity wherever they traveled. Her smile is said to push back shadows, and her presence inspires even traitors to second thoughts.\n\nLegends say she never draws her weapon first—but when she does, it's for someone she believes in.",
+  "location": "Klasnik"
+}
