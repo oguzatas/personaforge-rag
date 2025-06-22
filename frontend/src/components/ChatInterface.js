@@ -9,6 +9,8 @@ const ChatInterface = () => {
   const [messages, setMessages] = useState([]);
   const [currentMessage, setCurrentMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [debugMode, setDebugMode] = useState(false);
+  const [debugInfo, setDebugInfo] = useState(null);
 
   useEffect(() => {
     fetchUniverses();
@@ -65,13 +67,20 @@ const ChatInterface = () => {
     setMessages(prev => [...prev, userMessage]);
     setCurrentMessage('');
     setIsLoading(true);
+    setDebugInfo(null);
 
     try {
-      const response = await axios.post('/api/chat', {
+      console.log('Sending request with debug mode:', debugMode);
+      const requestData = {
         query: currentMessage,
         universe: selectedUniverse,
-        character_name: selectedCharacter
-      });
+        character_name: selectedCharacter,
+        debug: debugMode
+      };
+      console.log('Request data:', requestData);
+      
+      const response = await axios.post('/api/chat', requestData);
+      console.log('Response received:', response.data);
 
       const aiMessage = {
         type: 'ai',
@@ -81,7 +90,17 @@ const ChatInterface = () => {
       };
 
       setMessages(prev => [...prev, aiMessage]);
+      
+      // Store debug info if available
+      if (debugMode && response.data.debug_info) {
+        console.log('Setting debug info:', response.data.debug_info);
+        setDebugInfo(response.data.debug_info);
+      } else if (debugMode) {
+        console.log('Debug mode enabled but no debug_info in response');
+        console.log('Full response:', response.data);
+      }
     } catch (error) {
+      console.error('Error in sendMessage:', error);
       const errorMessage = {
         type: 'error',
         content: 'Sorry, there was an error processing your message: ' + error.response?.data?.detail,
@@ -103,139 +122,181 @@ const ChatInterface = () => {
     } else {
       setMessages([]);
     }
+    setDebugInfo(null);
+  };
+
+  const toggleDebugMode = () => {
+    setDebugMode(!debugMode);
+    setDebugInfo(null);
   };
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="bg-white rounded-lg shadow-md">
-        {/* Header */}
-        <div className="border-b p-4">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">Chat Interface</h2>
-          <div className="flex space-x-4">
-            <div className="flex-1">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Universe</label>
-              <select
-                value={selectedUniverse}
-                onChange={(e) => setSelectedUniverse(e.target.value)}
-                className="w-full border rounded px-3 py-2"
-              >
-                <option value="">Select Universe</option>
-                {universes.map((universe) => (
-                  <option key={universe} value={universe}>{universe}</option>
-                ))}
-              </select>
-            </div>
-            <div className="flex-1">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Character</label>
-              <select
-                value={selectedCharacter}
-                onChange={(e) => setSelectedCharacter(e.target.value)}
-                className="w-full border rounded px-3 py-2"
-                disabled={!selectedUniverse}
-              >
-                <option value="">Select Character</option>
-                {characters.map((character) => (
-                  <option key={character.name} value={character.name}>
-                    {character.name} ({character.role})
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="flex items-end">
-              <button
-                onClick={clearChat}
-                className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
-                disabled={!selectedCharacter}
-              >
-                Clear Chat
-              </button>
-            </div>
+    <div className="max-w-6xl mx-auto p-4">
+      <div className="bg-white rounded-lg shadow-lg p-6">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold text-gray-800">Chat Interface</h2>
+          <div className="flex items-center space-x-4">
+            <label className="flex items-center">
+              <input
+                type="checkbox"
+                checked={debugMode}
+                onChange={toggleDebugMode}
+                className="mr-2"
+              />
+              <span className="text-sm font-medium">Debug Mode</span>
+            </label>
+            <button
+              onClick={clearChat}
+              className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+            >
+              Clear Chat
+            </button>
           </div>
         </div>
 
-        {/* Chat Messages */}
-        <div className="h-96 overflow-y-auto p-4 space-y-4">
-          {messages.map((message, index) => (
-            <div key={index} className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}>
-              <div className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
-                message.type === 'user' 
-                  ? 'bg-blue-500 text-white' 
-                  : message.type === 'system'
-                  ? 'bg-gray-200 text-gray-700 text-sm'
-                  : message.type === 'error'
-                  ? 'bg-red-100 text-red-700'
-                  : 'bg-gray-100 text-gray-800'
-              }`}>
-                {message.type === 'ai' && (
-                  <div className="text-xs text-gray-500 mb-1">{message.character}</div>
-                )}
-                <div className="whitespace-pre-wrap">{message.content}</div>
-                {message.timestamp && (
-                  <div className="text-xs opacity-75 mt-1">{message.timestamp}</div>
-                )}
-              </div>
-            </div>
-          ))}
-          {isLoading && (
-            <div className="flex justify-start">
-              <div className="bg-gray-100 text-gray-800 px-4 py-2 rounded-lg">
-                <div className="flex items-center space-x-2">
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-600"></div>
-                  <span>Thinking...</span>
+        {/* Universe and Character Selection */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Select Universe
+            </label>
+            <select
+              value={selectedUniverse}
+              onChange={(e) => setSelectedUniverse(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded-md"
+            >
+              <option value="">Choose a universe...</option>
+              {universes.map((universe) => (
+                <option key={universe} value={universe}>
+                  {universe}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Select Character
+            </label>
+            <select
+              value={selectedCharacter}
+              onChange={(e) => setSelectedCharacter(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded-md"
+              disabled={!selectedUniverse}
+            >
+              <option value="">Choose a character...</option>
+              {characters.map((character) => (
+                <option key={character.name} value={character.name}>
+                  {character.name} ({character.role})
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Chat Messages */}
+          <div className="lg:col-span-2">
+            <div className="bg-gray-50 rounded-lg p-4 h-96 overflow-y-auto mb-4">
+              {messages.map((message, index) => (
+                <div
+                  key={index}
+                  className={`mb-4 p-3 rounded-lg ${
+                    message.type === 'user'
+                      ? 'bg-blue-100 ml-8'
+                      : message.type === 'ai'
+                      ? 'bg-green-100 mr-8'
+                      : message.type === 'system'
+                      ? 'bg-yellow-100 text-center'
+                      : 'bg-red-100'
+                  }`}
+                >
+                  <div className="font-medium text-sm text-gray-600 mb-1">
+                    {message.type === 'user' ? 'You' : 
+                     message.type === 'ai' ? message.character : 
+                     message.type === 'system' ? 'System' : 'Error'}
+                    {message.timestamp && (
+                      <span className="ml-2 text-xs">{message.timestamp}</span>
+                    )}
+                  </div>
+                  <div className="text-gray-800">{message.content}</div>
                 </div>
+              ))}
+              {isLoading && (
+                <div className="text-center text-gray-500">
+                  <div className="animate-spin inline-block w-4 h-4 border-2 border-gray-500 border-t-transparent rounded-full mr-2"></div>
+                  Thinking...
+                </div>
+              )}
+            </div>
+
+            {/* Message Input */}
+            <form onSubmit={sendMessage} className="flex gap-2">
+              <input
+                type="text"
+                value={currentMessage}
+                onChange={(e) => setCurrentMessage(e.target.value)}
+                placeholder="Type your message..."
+                className="flex-1 p-2 border border-gray-300 rounded-md"
+                disabled={!selectedCharacter || isLoading}
+              />
+              <button
+                type="submit"
+                disabled={!selectedCharacter || isLoading || !currentMessage.trim()}
+                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:bg-gray-300"
+              >
+                Send
+              </button>
+            </form>
+          </div>
+
+          {/* Debug Panel */}
+          {debugMode && (
+            <div className="lg:col-span-1">
+              <div className="bg-gray-50 rounded-lg p-4 h-96 overflow-y-auto">
+                <h3 className="text-lg font-semibold mb-4 text-gray-800">Debug Info</h3>
+                {debugInfo ? (
+                  <div className="space-y-4">
+                    {/* Character Info */}
+                    <div>
+                      <h4 className="font-medium text-sm text-gray-700 mb-2">Character Info</h4>
+                      <div className="bg-white p-3 rounded border text-xs">
+                        <p><strong>Name:</strong> {debugInfo.character_info.name}</p>
+                        <p><strong>Role:</strong> {debugInfo.character_info.role}</p>
+                        <p><strong>Mood:</strong> {debugInfo.character_info.mood}</p>
+                        <p><strong>Location:</strong> {debugInfo.character_info.location}</p>
+                      </div>
+                    </div>
+
+                    {/* Retrieved Context */}
+                    <div>
+                      <h4 className="font-medium text-sm text-gray-700 mb-2">Retrieved Context ({debugInfo.retrieved_context.length} chunks)</h4>
+                      <div className="bg-white p-3 rounded border text-xs max-h-32 overflow-y-auto">
+                        {debugInfo.retrieved_context.map((chunk, index) => (
+                          <div key={index} className="mb-2 p-2 bg-gray-50 rounded">
+                            <strong>Chunk {index + 1}:</strong> {chunk}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Full Prompt */}
+                    <div>
+                      <h4 className="font-medium text-sm text-gray-700 mb-2">Full Prompt</h4>
+                      <div className="bg-white p-3 rounded border text-xs max-h-32 overflow-y-auto">
+                        <pre className="whitespace-pre-wrap">{debugInfo.full_prompt}</pre>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-gray-500 text-sm">
+                    Send a message to see debug information
+                  </div>
+                )}
               </div>
             </div>
           )}
         </div>
-
-        {/* Message Input */}
-        <div className="border-t p-4">
-          <form onSubmit={sendMessage} className="flex space-x-2">
-            <input
-              type="text"
-              value={currentMessage}
-              onChange={(e) => setCurrentMessage(e.target.value)}
-              placeholder={selectedCharacter ? `Message ${selectedCharacter}...` : "Select a character to start chatting"}
-              className="flex-1 border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              disabled={!selectedCharacter || isLoading}
-            />
-            <button
-              type="submit"
-              disabled={!selectedCharacter || isLoading || !currentMessage.trim()}
-              className="bg-blue-500 hover:bg-blue-700 disabled:bg-gray-300 text-white font-bold py-2 px-4 rounded"
-            >
-              Send
-            </button>
-          </form>
-        </div>
       </div>
-
-      {/* Character Info Panel */}
-      {selectedCharacter && (
-        <div className="mt-4 bg-white rounded-lg shadow-md p-4">
-          <h3 className="text-lg font-semibold mb-2">Character Info</h3>
-          {(() => {
-            const character = characters.find(c => c.name === selectedCharacter);
-            return character ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                <div>
-                  <p><strong>Name:</strong> {character.name}</p>
-                  <p><strong>Role:</strong> {character.role}</p>
-                  <p><strong>Location:</strong> {character.location}</p>
-                </div>
-                <div>
-                  <p><strong>Mood:</strong> {character.current_mood.primary_emotion} ({character.current_mood.intensity})</p>
-                  <p><strong>Emotions:</strong> {character.current_mood.plutchik_axis.join(', ')}</p>
-                  <p><strong>Inventory:</strong> {character.inventory.join(', ')}</p>
-                </div>
-                <div className="md:col-span-2">
-                  <p><strong>Backstory:</strong> {character.backstory}</p>
-                </div>
-              </div>
-            ) : null;
-          })()}
-        </div>
-      )}
     </div>
   );
 };

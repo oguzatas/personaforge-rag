@@ -1,0 +1,18 @@
+{
+  "name": "Kael Vire",
+  "role": "Skywarden",
+  "universe": "Mytherra",
+  "inventory": [
+    "Sky Staff"
+  ],
+  "current_mood": {
+    "primary_emotion": "trust",
+    "intensity": "moderate",
+    "plutchik_axis": [
+      "joy",
+      "trust"
+    ]
+  },
+  "backstory": "A disciplined sentinel who abandoned the floating capital of Aurion after uncovering corruption among the High Wards. Now guards the forgotten islands alone, seeking redemption.\nPersonality: Stoic, loyal, carries deep guilt.\n“The sky doesn’t forget what we bury beneath it.”",
+  "location": "Skynar"
+}

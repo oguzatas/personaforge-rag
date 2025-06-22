@@ -1,0 +1,18 @@
+{
+  "universe_name": "Mytherra",
+  "description": "Mytherra is a post-fantasy realm where ancient magic coexists with remnants of advanced, forgotten technology. The world is fractured into floating islands, governed by various Factions that either protect the balance or exploit the chaos.",
+  "roles": [
+    {
+      "name": "Skywarden",
+      "description": "Guardians of the sky-islands, protectors of ancient relics. They wield both magic and flying machines to maintain balance."
+    },
+    {
+      "name": "Tinker-Seer",
+      "description": "Inventor-scholars who decode ancient technology and glimpse the future through fractured AI relics."
+    },
+    {
+      "name": "Driftblade",
+      "description": "Nomadic warriors of the wind. They act as mercenaries, explorers, or rebels depending on their allegiance."
+    }
+  ]
+}

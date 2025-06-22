@@ -1,16 +1,17 @@
 # app/prompt_templates.py
 
 def format_prompt(query: str, context_chunks: list[str], role_description: str) -> str:
-    context = "\n\n".join(context_chunks)
-    return f"""
-{role_description}
-Aşağıda bazı bilgiler var. Buna dayanarak oyuncunun sorusuna cevap ver:
+    """Format a simple, plain English prompt for the LLM."""
+    context = "\n".join(context_chunks)
+    
+    prompt = f"""You are roleplaying as a character. Respond naturally to the user's question.
 
-=== Bilgiler ===
-{context}
+Character: {role_description}
 
-=== Soru ===
-{query}
+World Context: {context}
 
-=== Cevap ===
-"""
+User: {query}
+
+Character:"""
+    
+    return prompt

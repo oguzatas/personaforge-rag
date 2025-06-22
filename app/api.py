@@ -48,6 +48,7 @@ class ChatRequest(BaseModel):
     query: str
     universe: str
     character_name: str
+    debug: bool = False
 
 # Universe endpoints
 @app.get("/api/universes")
@@ -142,12 +143,21 @@ async def chat(request: ChatRequest):
     try:
         character_data = get_character_by_name(request.universe, request.character_name)
         character = Character(character_data)
-        response = answer_question(request.query, request.universe, character)
-        return {
-            "response": response,
-            "character": character_data["name"],
-            "universe": request.universe
-        }
+        result = answer_question(request.query, request.universe, character, debug=request.debug)
+        
+        if request.debug:
+            return {
+                "response": result["response"],
+                "character": character_data["name"],
+                "universe": request.universe,
+                "debug_info": result["debug_info"]
+            }
+        else:
+            return {
+                "response": result["response"],
+                "character": character_data["name"],
+                "universe": request.universe
+            }
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
     except Exception as e:
