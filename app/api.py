@@ -11,13 +11,14 @@ from app.universe_manager import (
 from app.character import Character
 from app.rag_pipeline import answer_question
 from app.universe_embedder import build_universe_index, build_all_universe_indices
+from config.settings import FRONTEND_URL, API_HOST, API_PORT
 
 app = FastAPI(title="PersonaForge RAG API", version="1.0.0")
 
 # Enable CORS for frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # React dev server
+    allow_origins=[FRONTEND_URL],  # Use config
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -158,4 +159,4 @@ async def health_check():
     return {"status": "healthy"}
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000) 
+    uvicorn.run(app, host=API_HOST, port=API_PORT) 

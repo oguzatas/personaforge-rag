@@ -1,18 +1,17 @@
 import requests
 import json
 import warnings
+from config.settings import LLM_ENDPOINT_URL
 warnings.filterwarnings("ignore")
 
 def test_phi():
     print("Testing remote Phi-2 endpoint...")
     
-    # Endpoint URL
-    endpoint_url = "https://aed6-34-126-117-137.ngrok-free.app/generate"
+    # Use configured endpoint URL
+    endpoint_url = LLM_ENDPOINT_URL
     
     # Test prompt
-    prompt = "Question: What is 3x + 5 = 20?\nAnswer:"
-
-
+    prompt = "Hello, I am an AI assistant. How can I help you today?"
     
     try:
         # Prepare the request payload

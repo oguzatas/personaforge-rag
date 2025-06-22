@@ -1,13 +1,18 @@
 import requests
 import json
 from pathlib import Path
+from config.settings import LLM_ENDPOINT_URL, LLM_MAX_TOKENS, LLM_TEMPERATURE
 
 class Phi2Interface:
-    def __init__(self, endpoint_url="https://aed6-34-126-117-137.ngrok-free.app/generate"):
-        self.endpoint_url = endpoint_url
+    def __init__(self, endpoint_url=None):
+        self.endpoint_url = endpoint_url or LLM_ENDPOINT_URL
         
-    def generate_response(self, prompt: str, max_length: int = 512, temperature: float = 0.7) -> str:
+    def generate_response(self, prompt: str, max_length: int = None, temperature: float = None) -> str:
         """Generate response using remote Phi-2 endpoint."""
+        # Use config defaults if not specified
+        max_length = max_length or LLM_MAX_TOKENS
+        temperature = temperature or LLM_TEMPERATURE
+        
         try:
             # Prepare the request payload
             payload = {
