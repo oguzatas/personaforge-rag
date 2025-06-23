@@ -119,6 +119,15 @@ const ChatInterface = () => {
         type: 'system',
         content: `You are now chatting with ${character.name}, a ${character.role} from ${selectedUniverse}. Current mood: ${character.current_mood.primary_emotion} (${character.current_mood.intensity})`
       }]);
+      
+      // Clear conversation history on backend
+      axios.post('/api/chat/clear', {
+        query: '',
+        universe: selectedUniverse,
+        character_name: selectedCharacter
+      }).catch(error => {
+        console.error('Error clearing conversation:', error);
+      });
     } else {
       setMessages([]);
     }
@@ -278,6 +287,16 @@ const ChatInterface = () => {
                         ))}
                       </div>
                     </div>
+
+                    {/* Conversation History */}
+                    {debugInfo.conversation_history && (
+                      <div>
+                        <h4 className="font-medium text-sm text-gray-700 mb-2">Conversation History</h4>
+                        <div className="bg-white p-3 rounded border text-xs max-h-32 overflow-y-auto">
+                          <pre className="whitespace-pre-wrap">{debugInfo.conversation_history}</pre>
+                        </div>
+                      </div>
+                    )}
 
                     {/* Full Prompt */}
                     <div>

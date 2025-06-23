@@ -9,7 +9,7 @@ from app.universe_manager import (
     create_character, load_characters, get_character_by_name
 )
 from app.character import Character
-from app.rag_pipeline import answer_question
+from app.rag_pipeline import answer_question, clear_conversation
 from app.universe_embedder import build_universe_index, build_all_universe_indices
 from config.settings import FRONTEND_URL, API_HOST, API_PORT
 
@@ -139,7 +139,7 @@ async def build_all_indices_endpoint():
 # Chat endpoint
 @app.post("/api/chat")
 async def chat(request: ChatRequest):
-    """Chat with a character using RAG."""
+    """Chat with a character using RAG with conversation history."""
     try:
         character_data = get_character_by_name(request.universe, request.character_name)
         character = Character(character_data)
@@ -160,6 +160,16 @@ async def chat(request: ChatRequest):
             }
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# Clear conversation endpoint
+@app.post("/api/chat/clear")
+async def clear_chat(request: ChatRequest):
+    """Clear conversation history for a character."""
+    try:
+        clear_conversation(request.character_name, request.universe)
+        return {"message": f"Conversation history cleared for {request.character_name}"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
