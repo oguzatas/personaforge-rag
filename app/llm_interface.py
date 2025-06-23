@@ -36,6 +36,39 @@ class Phi2Interface:
         # Clean up any remaining artifacts
         response = response.strip()
         
+        # Limit response length to prevent rambling
+        if len(response) > 200:
+            # Try to cut at a sentence boundary
+            sentences = response.split('.')
+            if len(sentences) > 1:
+                response = '. '.join(sentences[:2]) + '.'
+            else:
+                response = response[:200] + "..."
+        
+        # Remove any game-like or meta content
+        unwanted_phrases = [
+            "A game of",
+            "The rules are",
+            "Question:",
+            "Answer:",
+            "The player",
+            "If the player",
+            "This means",
+            "However,",
+            "This is the actual response",
+            "at least he starts",
+            "idk how to fix",
+            "maybe instruction tuning"
+        ]
+        
+        for phrase in unwanted_phrases:
+            if phrase.lower() in response.lower():
+                # Cut off at the unwanted phrase
+                idx = response.lower().find(phrase.lower())
+                if idx > 0:
+                    response = response[:idx].strip()
+                    break
+        
         # If response is empty or just whitespace, return a default
         if not response or response.isspace():
             return "I'm not sure how to respond to that."
@@ -45,7 +78,7 @@ class Phi2Interface:
     def generate_response(self, prompt: str, max_length: int = None, temperature: float = None) -> str:
         """Generate response using remote Phi-2 endpoint."""
         # Use config defaults if not specified
-        max_length = max_length or LLM_MAX_TOKENS
+        max_length = max_length or 100  # Reduced from 512 to 100 for shorter responses
         temperature = temperature or LLM_TEMPERATURE
         
         try:

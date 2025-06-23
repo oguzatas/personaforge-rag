@@ -63,9 +63,9 @@ class ConversationManager:
         context_lines = []
         for msg in history:
             if msg.role == "user":
-                context_lines.append(f"User: {msg.content}")
+                context_lines.append(f"User says: {msg.content}")
             else:
-                context_lines.append(f"{character_name}: {msg.content}")
+                context_lines.append(f"You said: {msg.content}")
         
         return "\n".join(context_lines)
     
