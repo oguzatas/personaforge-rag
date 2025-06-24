@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 
 # LLM Configuration
-LLM_ENDPOINT_URL = os.getenv("LLM_ENDPOINT_URL", "https://3dea-34-124-140-224.ngrok-free.app/generate")
+LLM_ENDPOINT_URL = os.getenv("LLM_ENDPOINT_URL", "https://39da-34-87-107-18.ngrok-free.app/generate")
 LLM_MAX_TOKENS = int(os.getenv("LLM_MAX_TOKENS", "100"))
 LLM_TEMPERATURE = float(os.getenv("LLM_TEMPERATURE", "0.7"))
 
