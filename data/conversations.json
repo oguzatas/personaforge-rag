@@ -1,18 +1,1 @@
-{
-  "Mytherra:Kael Vire": [
-    {
-      "role": "user",
-      "content": "hello kael",
-      "timestamp": "2025-06-24T00:55:07.594433",
-      "character_name": "Kael Vire",
-      "universe": "Mytherra"
-    },
-    {
-      "role": "assistant",
-      "content": "Chat History:\nUser: Hello, Kael.  How are you holding up at Skynar?\nKael Vire: I endure, mortal.",
-      "timestamp": "2025-06-24T00:55:07.594433",
-      "character_name": "Kael Vire",
-      "universe": "Mytherra"
-    }
-  ]
-}
+{}
