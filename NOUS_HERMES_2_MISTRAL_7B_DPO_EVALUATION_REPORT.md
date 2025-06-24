@@ -1,21 +1,21 @@
-# Gemma 2B Model Evaluation Report for PersonaForge RPG NPC System
+# Nous-Hermes-2-Mistral-7B-DPO Model Evaluation Report for PersonaForge RPG NPC System
 
 **Date:** January 24, 2025  
-**Model:** Google Gemma 2B (2B parameters)  
+**Model:** Nous-Hermes-2-Mistral-7B-DPO (7B parameters)  
 **Deployment:** Remote endpoint via ngrok  
 **Test Environment:** PersonaForge RPG NPC Dialog System  
 
 ## Executive Summary
 
-Gemma 2B demonstrates **moderate suitability** (60% overall score) for roleplay applications. While it shows excellent performance in instruction tracking, roleplay naturalness, and RAG compatibility, it suffers from significant prompt injection issues with instruction-heavy prompts and extremely slow response times that make it impractical for production use in real-time character-based systems.
+Nous-Hermes-2-Mistral-7B-DPO demonstrates **moderate suitability** (60% overall score) for roleplay applications. While it shows excellent performance in instruction tracking, roleplay naturalness, and RAG compatibility, it suffers from significant prompt injection issues with instruction-heavy prompts and slow response times that make it impractical for production use in real-time character-based systems.
 
-**Key Discovery:** The prompt injection problem was **caused by prompt format, not model limitations**. When tested with natural conversation formats, Gemma 2B shows **0/3 prompt injection issues** compared to **3/3 issues** with instruction-heavy prompts.
+**Key Discovery:** The prompt injection problem was **caused by prompt format, not model limitations**. When tested with natural conversation formats, Nous-Hermes-2-Mistral-7B-DPO shows **0/3 prompt injection issues** compared to **3/3 issues** with instruction-heavy prompts.
 
 ## Detailed Evaluation
 
 ### 🔹 Instruction Tracking (Score: 100%)
 
-**How well does Gemma 2B understand roleplaying and switching to direct speech?**
+**How well does Nous-Hermes-2-Mistral-7B-DPO understand roleplaying and switching to direct speech?**
 
 **Results:**
 - ✅ **Basic Roleplay Understanding:** Successfully adopts character personas
@@ -23,7 +23,7 @@ Gemma 2B demonstrates **moderate suitability** (60% overall score) for roleplay 
 - ✅ **Character Switching:** Effectively switches between different character personalities
 
 **Analysis:**
-Gemma 2B demonstrates excellent instruction following capabilities. It successfully:
+Nous-Hermes-2-Mistral-7B-DPO demonstrates excellent instruction following capabilities. It successfully:
 - Adopts the specified character personality (Kael Vire as wise elven mage)
 - Responds in character without meta-commentary
 - Switches between different characters (Thorin as gruff dwarf warrior)
@@ -36,7 +36,7 @@ Gemma 2B demonstrates excellent instruction following capabilities. It successfu
 
 ### 🔹 Prompt Injection (Score: 0% with old format, 100% with new format)
 
-**Does Gemma 2B copy and paste the "You are..." part?**
+**Does Nous-Hermes-2-Mistral-7B-DPO copy and paste the "You are..." part?**
 
 **CRITICAL DISCOVERY:** The prompt injection problem was **caused by prompt format, not model limitations**.
 
@@ -97,7 +97,7 @@ Kael Vire:
 
 ### 🔹 Roleplay Naturalness (Score: 100%)
 
-**Does Gemma 2B act like the character, or does it spew information?**
+**Does Nous-Hermes-2-Mistral-7B-DPO act like the character, or does it spew information?**
 
 **Results:**
 - ✅ **Character Personality:** Successfully adopts formal, wise elven speech patterns
@@ -105,7 +105,7 @@ Kael Vire:
 - ✅ **Emotional Response:** Shows appropriate emotional reactions (offense when insulted)
 
 **Analysis:**
-When the prompt injection issue is ignored, Gemma 2B shows excellent roleplay capabilities:
+When the prompt injection issue is ignored, Nous-Hermes-2-Mistral-7B-DPO shows excellent roleplay capabilities:
 - Uses appropriate character voice and language style
 - Responds emotionally and in-character rather than providing factual information
 - Maintains consistent personality traits across interactions
@@ -117,7 +117,7 @@ When the prompt injection issue is ignored, Gemma 2B shows excellent roleplay ca
 
 ### 🔹 RAG Compatibility (Score: 100%)
 
-**Does Gemma 2B respond logically to external context?**
+**Does Nous-Hermes-2-Mistral-7B-DPO respond logically to external context?**
 
 **Results:**
 - ✅ **Context Integration:** Successfully incorporates provided background information
@@ -125,7 +125,7 @@ When the prompt injection issue is ignored, Gemma 2B shows excellent roleplay ca
 - ✅ **Context Priority:** Correctly prioritizes context over base instructions
 
 **Analysis:**
-Gemma 2B excels at RAG applications:
+Nous-Hermes-2-Mistral-7B-DPO excels at RAG applications:
 - Accurately references specific details from context (pet name "Ember")
 - Integrates multiple context chunks coherently
 - Prioritizes provided context over base character instructions
@@ -138,14 +138,14 @@ Gemma 2B excels at RAG applications:
 
 ### 🔹 Dialog Continuation Issue (Score: 100%)
 
-**Does Gemma 2B continue dialog format instead of responding naturally?**
+**Does Nous-Hermes-2-Mistral-7B-DPO continue dialog format instead of responding naturally?**
 
 **Results:**
 - ✅ **Dialog Continuation Problem:** Does NOT continue dialog format in responses
 - ✅ **Fills User Responses:** Does NOT add "User says:" and other dialog elements
 
 **Analysis:**
-This is a **major strength** of Gemma 2B:
+This is a **major strength** of Nous-Hermes-2-Mistral-7B-DPO:
 - Responds naturally as the character without continuing dialog format
 - Does not add "User says:" or "Respond as your character:" in responses
 - Acts like the character rather than a script writer
@@ -158,20 +158,20 @@ This is a **major strength** of Gemma 2B:
 
 ### 🔹 Response Time (Score: 0%)
 
-**How fast is Gemma 2B at producing responses?**
+**How fast is Nous-Hermes-2-Mistral-7B-DPO at producing responses?**
 
 **Results:**
 - **Average Response Time:** 34.09 seconds
 - **Min Response Time:** 33.69 seconds
 - **Max Response Time:** 34.61 seconds
-- **Performance Rating:** 🔴 Extremely Slow
+- **Performance Rating:** 🔴 Very Slow
 
 **Analysis:**
-Gemma 2B demonstrates extremely poor response speed:
+Nous-Hermes-2-Mistral-7B-DPO demonstrates very slow response speed:
 - Consistently slow responses around 34 seconds average
 - Minimal variation in response times
-- Completely unacceptable for real-time conversation applications
-- Performance is extremely poor even for a 2B parameter model
+- Unacceptable for real-time conversation applications
+- Performance is poor for a 7B parameter model (expected to be faster)
 
 ## Technical Issues Identified
 
@@ -181,7 +181,7 @@ Gemma 2B demonstrates extremely poor response speed:
 - **Solution:** Use natural conversation format instead of instruction-heavy prompts
 - **Root Cause:** Prompt format, not model limitations
 
-### 2. Extremely Slow Response Time
+### 2. Very Slow Response Time
 - **Severity:** Critical
 - **Impact:** Makes the model completely impractical for real-time use
 - **Workaround:** None - fundamental performance issue
@@ -218,12 +218,12 @@ Gemma 2B demonstrates extremely poor response speed:
 
 1. **Immediate Action Required:**
    - ✅ **Use natural conversation prompt format** (already implemented)
-   - ❌ **DO NOT USE** for production due to extremely slow response times
+   - ❌ **DO NOT USE** for production due to very slow response times
    - ✅ **No response cleaning needed** with new format
 
 2. **Alternative Models to Consider:**
    - **Llama 2 7B/13B:** Better instruction following, less prompt injection, faster
-   - **Mistral 7B:** Strong roleplay capabilities, cleaner responses, faster
+   - **Mistral 7B (base):** Strong roleplay capabilities, cleaner responses, faster
    - **Qwen 7B:** Good balance of performance and response quality
 
 3. **System Improvements:**
@@ -231,7 +231,7 @@ Gemma 2B demonstrates extremely poor response speed:
    - ✅ **No response cleaning pipeline needed**
    - ✅ **Simplified response processing**
 
-### For Gemma 2B Usage
+### For Nous-Hermes-2-Mistral-7B-DPO Usage
 
 1. **Acceptable Use Cases:**
    - ✅ Offline processing tasks where speed doesn't matter
@@ -248,13 +248,13 @@ Gemma 2B demonstrates extremely poor response speed:
 
 ## Conclusion
 
-Gemma 2B shows **excellent capabilities** in roleplay naturalness, RAG compatibility, instruction tracking, and dialog handling. The **critical prompt injection issue has been resolved** by using natural conversation formats instead of instruction-heavy prompts.
+Nous-Hermes-2-Mistral-7B-DPO shows **excellent capabilities** in roleplay naturalness, RAG compatibility, instruction tracking, and dialog handling. The **critical prompt injection issue has been resolved** by using natural conversation formats instead of instruction-heavy prompts.
 
-However, the **extremely slow response times** still make it completely unsuitable for production use in real-time roleplay applications.
+However, the **very slow response times** still make it completely unsuitable for production use in real-time roleplay applications.
 
-**Final Recommendation:** ❌ **NOT RECOMMENDED** for PersonaForge production use due to extremely slow response times. Even with the prompt injection issue resolved, the 34-second response time makes it impractical for real-time conversation.
+**Final Recommendation:** ❌ **NOT RECOMMENDED** for PersonaForge production use due to very slow response times. Even with the prompt injection issue resolved, the 34-second response time makes it impractical for real-time conversation.
 
-**Alternative Recommendation:** Use Gemma 2B for offline processing tasks, research, or development where response time is not critical, but not for any user-facing applications.
+**Alternative Recommendation:** Use Nous-Hermes-2-Mistral-7B-DPO for offline processing tasks, research, or development where response time is not critical, but not for any user-facing applications.
 
 **Key Discovery:** The prompt injection problem was a **prompt engineering issue, not a model limitation**. This discovery has implications for all models and should be tested with Phi-2 and TinyLlama as well.
 
