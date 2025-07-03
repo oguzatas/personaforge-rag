@@ -1,0 +1,32 @@
+{
+  "Mytherra:Kael Vire": [
+    {
+      "role": "user",
+      "content": "hello kael",
+      "timestamp": "2025-06-24T10:54:28.273991",
+      "character_name": "Kael Vire",
+      "universe": "Mytherra"
+    },
+    {
+      "role": "assistant",
+      "content": "Greetings, traveler. What brings you to Skynar?",
+      "timestamp": "2025-06-24T10:54:28.273991",
+      "character_name": "Kael Vire",
+      "universe": "Mytherra"
+    },
+    {
+      "role": "user",
+      "content": "i am just passing by",
+      "timestamp": "2025-06-24T10:54:37.586774",
+      "character_name": "Kael Vire",
+      "universe": "Mytherra"
+    },
+    {
+      "role": "assistant",
+      "content": "Ah, I see. Well, you are welcome to stay for as long as you need. May your journey continue safely.",
+      "timestamp": "2025-06-24T10:54:37.586774",
+      "character_name": "Kael Vire",
+      "universe": "Mytherra"
+    }
+  ]
+}
