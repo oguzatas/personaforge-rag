@@ -145,4 +145,15 @@ def get_character_registry(universe: str) -> Dict[str, Any]:
         return create_character_registry(universe)
     
     with open(registry_path, "r", encoding="utf-8") as f:
-        return json.load(f) 
+        return json.load(f)
+
+def save_character(universe: str, character_name: str, character_data: Dict[str, Any]) -> None:
+    """Save/update a character's data."""
+    validate_character_manifest(character_data)
+    char_name = character_name.lower().replace(" ", "_")
+    
+    char_dir = UNIVERSES_DIR / universe / "characters"
+    char_path = char_dir / f"{char_name}.json"
+    
+    with open(char_path, "w", encoding="utf-8") as f:
+        json.dump(character_data, f, indent=2, ensure_ascii=False) 
