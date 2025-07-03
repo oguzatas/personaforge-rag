@@ -11,6 +11,8 @@ const ChatInterface = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [debugMode, setDebugMode] = useState(false);
   const [debugInfo, setDebugInfo] = useState(null);
+  const [characterEvents, setCharacterEvents] = useState([]);
+  const [showCharacterState, setShowCharacterState] = useState(false);
 
   useEffect(() => {
     fetchUniverses();
@@ -32,9 +34,21 @@ const ChatInterface = () => {
           type: 'system',
           content: `You are now chatting with ${character.name}, a ${character.role} from ${selectedUniverse}. Current mood: ${character.current_mood.primary_emotion} (${character.current_mood.intensity})`
         }]);
+        fetchCharacterEvents();
       }
     }
   }, [selectedCharacter, characters, selectedUniverse]);
+
+  const fetchCharacterEvents = async () => {
+    if (!selectedUniverse || !selectedCharacter) return;
+    
+    try {
+      const response = await axios.get(`/api/universes/${selectedUniverse}/characters/${selectedCharacter}/events`);
+      setCharacterEvents(response.data.events);
+    } catch (error) {
+      console.error('Error fetching character events:', error);
+    }
+  };
 
   const fetchUniverses = async () => {
     try {
@@ -90,6 +104,21 @@ const ChatInterface = () => {
       };
 
       setMessages(prev => [...prev, aiMessage]);
+      
+      // Handle character state changes
+      if (response.data.character_updated) {
+        // Refresh character data and events
+        fetchCharacters();
+        fetchCharacterEvents();
+        
+        // Show state change notification
+        const stateChangeMessage = {
+          type: 'system',
+          content: `Character state updated! Check the character panel for changes.`,
+          timestamp: new Date().toLocaleTimeString()
+        };
+        setMessages(prev => [...prev, stateChangeMessage]);
+      }
       
       // Store debug info if available
       if (debugMode && response.data.debug_info) {
@@ -148,6 +177,15 @@ const ChatInterface = () => {
             <label className="flex items-center">
               <input
                 type="checkbox"
+                checked={showCharacterState}
+                onChange={() => setShowCharacterState(!showCharacterState)}
+                className="mr-2"
+              />
+              <span className="text-sm font-medium">Character State</span>
+            </label>
+            <label className="flex items-center">
+              <input
+                type="checkbox"
                 checked={debugMode}
                 onChange={toggleDebugMode}
                 className="mr-2"
@@ -202,7 +240,7 @@ const ChatInterface = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Chat Messages */}
           <div className="lg:col-span-2">
             <div className="bg-gray-50 rounded-lg p-4 h-96 overflow-y-auto mb-4">
@@ -257,6 +295,53 @@ const ChatInterface = () => {
               </button>
             </form>
           </div>
+
+          {/* Character State Panel */}
+          {showCharacterState && selectedCharacter && (
+            <div className="lg:col-span-1">
+              <div className="bg-gray-50 rounded-lg p-4 h-96 overflow-y-auto">
+                <h3 className="text-lg font-semibold mb-4 text-gray-800">Character State</h3>
+                {(() => {
+                  const character = characters.find(c => c.name === selectedCharacter);
+                  if (!character) return <div className="text-gray-500 text-sm">Character not found</div>;
+                  
+                  return (
+                    <div className="space-y-4">
+                      {/* Current State */}
+                      <div>
+                        <h4 className="font-medium text-sm text-gray-700 mb-2">Current State</h4>
+                        <div className="bg-white p-3 rounded border text-xs">
+                          <p><strong>Name:</strong> {character.name}</p>
+                          <p><strong>Role:</strong> {character.role}</p>
+                          <p><strong>Location:</strong> {character.location}</p>
+                          <p><strong>Mood:</strong> {character.current_mood.primary_emotion} ({character.current_mood.intensity})</p>
+                          <p><strong>Inventory:</strong> {character.inventory.length > 0 ? character.inventory.join(', ') : 'Empty'}</p>
+                        </div>
+                      </div>
+
+                      {/* Recent Events */}
+                      <div>
+                        <h4 className="font-medium text-sm text-gray-700 mb-2">Recent Events ({characterEvents.length})</h4>
+                        <div className="bg-white p-3 rounded border text-xs max-h-32 overflow-y-auto">
+                          {characterEvents.length > 0 ? (
+                            characterEvents.map((event, index) => (
+                              <div key={index} className="mb-2 p-2 bg-gray-50 rounded">
+                                <div className="font-medium text-xs text-gray-600">{event.event_type}</div>
+                                <div className="text-xs">{event.description}</div>
+                                <div className="text-xs text-gray-500">{new Date(event.timestamp).toLocaleString()}</div>
+                              </div>
+                            ))
+                          ) : (
+                            <div className="text-gray-500">No recent events</div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })()}
+              </div>
+            </div>
+          )}
 
           {/* Debug Panel */}
           {debugMode && (

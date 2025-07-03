@@ -11,7 +11,7 @@ from app.universe_manager import (
 )
 from app.character import Character
 from app.character_manager import CharacterManager
-from app.rag_pipeline import answer_question, clear_conversation
+from app.rag_pipeline import answer_question, clear_conversation, get_character_events
 from app.universe_embedder import build_universe_index, build_all_universe_indices
 from config.settings import FRONTEND_URL, API_HOST, API_PORT
 
@@ -246,7 +246,7 @@ async def build_all_indices_endpoint():
 # Chat endpoint
 @app.post("/api/chat")
 async def chat(request: ChatRequest):
-    """Chat with a character using RAG with conversation history."""
+    """Chat with a character using RAG with conversation history and dynamic state changes."""
     try:
         character_data = get_character_by_name(request.universe, request.character_name)
         character = Character(character_data)
@@ -257,13 +257,19 @@ async def chat(request: ChatRequest):
                 "response": result["response"],
                 "character": character_data["name"],
                 "universe": request.universe,
+                "character_updated": result.get("character_updated", False),
+                "emotion_changes": result.get("emotion_changes", {}),
+                "inventory_changes": result.get("inventory_changes", {}),
                 "debug_info": result["debug_info"]
             }
         else:
             return {
                 "response": result["response"],
                 "character": character_data["name"],
-                "universe": request.universe
+                "universe": request.universe,
+                "character_updated": result.get("character_updated", False),
+                "emotion_changes": result.get("emotion_changes", {}),
+                "inventory_changes": result.get("inventory_changes", {})
             }
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
@@ -277,6 +283,16 @@ async def clear_chat(request: ChatRequest):
     try:
         clear_conversation(request.character_name, request.universe)
         return {"message": f"Conversation history cleared for {request.character_name}"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# Character events endpoint
+@app.get("/api/universes/{universe_name}/characters/{character_name}/events")
+async def get_character_events_endpoint(universe_name: str, character_name: str, max_events: int = 10):
+    """Get important events for a character."""
+    try:
+        events = get_character_events(character_name, universe_name, max_events)
+        return {"events": events}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

@@ -88,7 +88,9 @@ User: {query}
     
     return prompt
 
-def format_prompt_character_focused(query: str, context_chunks: list[str], role_description: str, conversation_history: str = "") -> str:
+def format_prompt_character_focused(query: str, context_chunks: list[str], role_description: str, 
+                                   conversation_history: str = "", important_events: str = "", 
+                                   character_state: str = "") -> str:
     """Enhanced prompt format with explicit character instructions and context guidance."""
     # Take only the most relevant context (max 2 chunks)
     relevant_context = "\n".join(context_chunks[:2])
@@ -96,26 +98,30 @@ def format_prompt_character_focused(query: str, context_chunks: list[str], role_
     # Extract character name from role description
     character_name = role_description.split(',')[0].strip()
     
-    # Build the prompt with explicit instructions
+    # Build context sections
+    context_sections = []
+    
+    if relevant_context:
+        context_sections.append(f"Background information: {relevant_context}")
+    
+    if character_state:
+        context_sections.append(f"Your current state: {character_state}")
+    
+    if important_events:
+        context_sections.append(important_events)
+    
     if conversation_history:
-        prompt = f"""You are {character_name}, {role_description}
+        context_sections.append(f"Previous conversation:\n{conversation_history}")
+    
+    # Combine all context sections
+    full_context = "\n\n".join(context_sections) if context_sections else ""
+    
+    # Build the prompt with explicit instructions
+    prompt = f"""You are {character_name}, {role_description}
 
 IMPORTANT: Always respond as {character_name}. Never break character or refer to yourself in third person. Use the background information to inform your responses naturally.
 
-Background information: {relevant_context}
-
-Previous conversation:
-{conversation_history}
-
-User: {query}
-
-{character_name}:"""
-    else:
-        prompt = f"""You are {character_name}, {role_description}
-
-IMPORTANT: Always respond as {character_name}. Never break character or refer to yourself in third person. Use the background information to inform your responses naturally.
-
-Background information: {relevant_context}
+{full_context}
 
 User: {query}
 
