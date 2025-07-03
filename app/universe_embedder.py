@@ -32,15 +32,39 @@ def build_universe_index(universe_name: str):
     try:
         characters = load_characters(universe_name)
         for char in characters:
-            # Character description
+            # Character overview chunk
             char_desc = f"Character: {char['name']} is a {char['role']} located at {char['location']}. "
-            char_desc += f"Backstory: {char['backstory']} "
             char_desc += f"Current mood: {char['current_mood']['primary_emotion']} ({char['current_mood']['intensity']}). "
             char_desc += f"Inventory: {', '.join(char['inventory'])}"
             chunks.append(char_desc)
             
-            # Separate backstory chunk for better retrieval
+            # Detailed backstory chunk
             chunks.append(f"{char['name']} backstory: {char['backstory']}")
+            
+            # Personality traits chunk
+            if 'personality_traits' in char:
+                traits = ', '.join(char['personality_traits'])
+                chunks.append(f"{char['name']} personality: {traits}")
+            
+            # Key quotes chunk
+            if 'key_quotes' in char:
+                quotes = ' '.join(char['key_quotes'])
+                chunks.append(f"{char['name']} quotes: {quotes}")
+            
+            # Knowledge domains chunk
+            if 'knowledge_domains' in char:
+                domains = ', '.join(char['knowledge_domains'])
+                chunks.append(f"{char['name']} knowledge: {domains}")
+            
+            # Relationships chunk
+            if 'relationships' in char:
+                rel = char['relationships']
+                rel_text = f"{char['name']} relationships: Faction: {rel.get('faction', 'Unknown')}"
+                if rel.get('allies'):
+                    rel_text += f". Allies: {', '.join(rel['allies'])}"
+                if rel.get('enemies'):
+                    rel_text += f". Enemies: {', '.join(rel['enemies'])}"
+                chunks.append(rel_text)
             
             # Location information
             chunks.append(f"Location {char['location']}: {char['name']} the {char['role']} can be found here.")

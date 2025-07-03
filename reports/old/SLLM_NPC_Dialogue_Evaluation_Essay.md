@@ -16,7 +16,7 @@ This study addresses the critical need for standardized evaluation methodologies
 
 We developed a multi-dimensional evaluation framework consisting of three primary test suites:
 
-1. **Comprehensive Testing**: Evaluates instruction adherence, prompt injection resistance, roleplay naturalness, RAG compatibility, response quality, and performance metrics
+1. **Comprehensive Testing**: Evaluates instruction adherence, prompt inject>£#E1Eion resistance, roleplay naturalness, RAG compatibility, response quality, and performance metrics
 2. **Automated Testing**: Assesses model behavior across multiple dialogue scenarios with standardized prompts
 3. **Baseline Testing**: Provides standardized benchmarks for model comparison
 

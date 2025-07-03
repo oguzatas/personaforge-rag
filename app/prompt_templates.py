@@ -88,6 +88,41 @@ User: {query}
     
     return prompt
 
+def format_prompt_character_focused(query: str, context_chunks: list[str], role_description: str, conversation_history: str = "") -> str:
+    """Enhanced prompt format with explicit character instructions and context guidance."""
+    # Take only the most relevant context (max 2 chunks)
+    relevant_context = "\n".join(context_chunks[:2])
+    
+    # Extract character name from role description
+    character_name = role_description.split(',')[0].strip()
+    
+    # Build the prompt with explicit instructions
+    if conversation_history:
+        prompt = f"""You are {character_name}, {role_description}
+
+IMPORTANT: Always respond as {character_name}. Never break character or refer to yourself in third person. Use the background information to inform your responses naturally.
+
+Background information: {relevant_context}
+
+Previous conversation:
+{conversation_history}
+
+User: {query}
+
+{character_name}:"""
+    else:
+        prompt = f"""You are {character_name}, {role_description}
+
+IMPORTANT: Always respond as {character_name}. Never break character or refer to yourself in third person. Use the background information to inform your responses naturally.
+
+Background information: {relevant_context}
+
+User: {query}
+
+{character_name}:"""
+    
+    return prompt
+
 def clean_response(response: str) -> str:
     """Clean the response to remove prompt injection artifacts and dialog continuation."""
     if not response:
@@ -99,7 +134,10 @@ def clean_response(response: str) -> str:
         "User says:",
         "Respond as your character:",
         "Background:",
+        "Background information:",
+        "Previous conversation:",
         "Recent conversation:",
+        "IMPORTANT:",
         "User:",
         "AI:",
         "BOT:",
@@ -116,8 +154,12 @@ def clean_response(response: str) -> str:
             pos = cleaned.find(pattern)
             if pos > 0:
                 cleaned = cleaned[pos:]
-                # Remove the pattern itself
+                # Remove the pattern itself and everything after it
                 cleaned = cleaned.replace(pattern, "", 1)
+                # Find the next newline and remove everything up to it
+                next_line = cleaned.find('\n')
+                if next_line != -1:
+                    cleaned = cleaned[next_line:].strip()
     
     # Remove dialog continuation patterns
     dialog_patterns = [

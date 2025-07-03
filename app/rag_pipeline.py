@@ -1,6 +1,6 @@
 # app/rag_pipeline.py
 from app.retriever import get_relevant_docs_for_universe
-from app.prompt_templates import format_prompt
+from app.prompt_templates import format_prompt_character_focused
 from app.llm_interface import call_llm
 from app.universe_manager import list_universes, load_universe_manifest, load_characters
 from app.character import Character
@@ -17,8 +17,8 @@ def answer_question(query: str, universe: str, character: Character, debug: bool
     # Get conversation history
     conversation_history = conversation_manager.format_conversation_context(character.name, universe)
     
-    # Format the full prompt with conversation history
-    full_prompt = format_prompt(query, context_chunks, character_desc, conversation_history)
+    # Format the full prompt with conversation history using character-focused template
+    full_prompt = format_prompt_character_focused(query, context_chunks, character_desc, conversation_history)
     
     # Generate response
     response = call_llm(full_prompt)

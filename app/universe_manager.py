@@ -112,4 +112,37 @@ def get_character_by_name(universe: str, character_name: str) -> Dict[str, Any]:
     for char in characters:
         if char["name"].lower() == character_name.lower():
             return char
-    raise ValueError(f"Character '{character_name}' not found in universe '{universe}'") 
+    raise ValueError(f"Character '{character_name}' not found in universe '{universe}'")
+
+def create_character_registry(universe: str) -> Dict[str, Any]:
+    """Create a registry of all characters in a universe for fast lookups."""
+    characters = load_characters(universe)
+    registry = {
+        "universe": universe,
+        "character_count": len(characters),
+        "characters": {}
+    }
+    
+    for char in characters:
+        registry["characters"][char["name"]] = {
+            "role": char["role"],
+            "location": char["location"],
+            "file_path": f"characters/{char['name'].lower().replace(' ', '_')}.json",
+            "last_updated": None  # Could be enhanced with file modification time
+        }
+    
+    # Save registry
+    registry_path = UNIVERSES_DIR / universe / "character_registry.json"
+    with open(registry_path, "w", encoding="utf-8") as f:
+        json.dump(registry, f, indent=2, ensure_ascii=False)
+    
+    return registry
+
+def get_character_registry(universe: str) -> Dict[str, Any]:
+    """Get the character registry for a universe."""
+    registry_path = UNIVERSES_DIR / universe / "character_registry.json"
+    if not registry_path.exists():
+        return create_character_registry(universe)
+    
+    with open(registry_path, "r", encoding="utf-8") as f:
+        return json.load(f) 
