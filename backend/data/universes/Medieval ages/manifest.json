@@ -1,0 +1,10 @@
+{
+  "universe_name": "Medieval ages",
+  "description": "It's the medieval times. the year is 1071.",
+  "roles": [
+    {
+      "name": "Knight",
+      "description": "Mighty Knight holds heavy 2 handed longsword."
+    }
+  ]
+}

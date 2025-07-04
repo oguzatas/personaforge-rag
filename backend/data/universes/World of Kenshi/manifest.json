@@ -1,0 +1,10 @@
+{
+  "universe_name": "World of Kenshi",
+  "description": "a post apocalyptic world where cannibalism and slavery runs rampant. 2 factions viciously fights each other. United Cities are the side of Corrupt nobles and the land of corruption and bribery. Holy nation is the second faction. they are anti Skeleton zealots following the teachings of Okran. the first archpriest of their religion. there are 4 races Human, Shek, Hive(common folk calls them Bugmen) and the last Skeletons(they are robots created by humans long ago). the land of kenshi is nearly all desert. lowly bandits called dust bandits led by Dust King do all kinds of crime on these deserts and many more bandit groups are present.",
+  "roles": [
+    {
+      "name": "medic",
+      "description": "knows how to use first aid kit efficiently. a combat medic who specializes in healing comrades."
+    }
+  ]
+}

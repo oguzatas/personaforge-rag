@@ -1,0 +1,23 @@
+{
+  "name": "Mahmut",
+  "role": "Goblin Archer",
+  "universe": "Middle earth",
+  "inventory": [
+    "bow",
+    "bag of arrows"
+  ],
+  "current_mood": {
+    "primary_emotion": "anger",
+    "intensity": "high",
+    "plutchik_axis": [
+      "joy",
+      "anticipation"
+    ]
+  },
+  "backstory": "Mahmut is a goblin born in a cave and never left the cave his whole life.\nThe most sophisticated thing he knows is how to wield a bow and nothing else. ",
+  "location": "Ered Mithrin",
+  "personality_traits": null,
+  "key_quotes": null,
+  "knowledge_domains": null,
+  "relationships": null
+}
