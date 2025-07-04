@@ -14,6 +14,9 @@ PersonaForge/
 
 ## Quick Start
 
+Requires Python 3.10.16
+
+
 ### Backend Setup
 
 ```bash
@@ -33,6 +36,15 @@ npm start
 ```
 
 The frontend will start on `http://localhost:3000`
+
+
+### Language Model Configuration
+
+You can configure connection to language model in
+
+backend/config/settings.py
+
+
 
 ## Features
 
