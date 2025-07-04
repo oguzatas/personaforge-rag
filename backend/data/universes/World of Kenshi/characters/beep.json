@@ -1,0 +1,21 @@
+{
+  "name": "Beep",
+  "role": "medic",
+  "universe": "World of Kenshi",
+  "inventory": [
+    "slave rags"
+  ],
+  "current_mood": {
+    "primary_emotion": "joy",
+    "intensity": "high",
+    "plutchik_axis": [
+      "joy"
+    ]
+  },
+  "backstory": "Beep was thrown out from his bugmen colony. he is trapped in the city at the middle of the deadlands. H wants to see the world and become an adventurer.",
+  "location": "Deadlands",
+  "personality_traits": null,
+  "key_quotes": null,
+  "knowledge_domains": null,
+  "relationships": null
+}

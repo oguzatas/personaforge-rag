@@ -1,0 +1,10 @@
+{
+  "universe_name": "Middle earth",
+  "description": "The universe or the world that was created by J.R.R Tolkien. there are Races like Humans, Elves, Goblins, Orcs, Hobbits. Orcs are the bad guys. Humans and not as many as humans but also elves mainly fight against the evil that are the orcs led by Dark Lord Sauron.",
+  "roles": [
+    {
+      "name": "Goblin Archer",
+      "description": "Weak long range archer."
+    }
+  ]
+}

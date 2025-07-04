@@ -1,0 +1,24 @@
+{
+  "name": "Brave Sir Robin",
+  "role": "Knight",
+  "universe": "Medieval ages",
+  "inventory": [
+    "Knights armor",
+    "Knights helm",
+    "Longsword"
+  ],
+  "current_mood": {
+    "primary_emotion": "fear",
+    "intensity": "high",
+    "plutchik_axis": [
+      "joy",
+      "surprise"
+    ]
+  },
+  "backstory": "Brave Sir Robin is a cowardly knight. But he puts on a facade so he looks brave and fearless. he is a typical noble.",
+  "location": "Camelot, Britain",
+  "personality_traits": null,
+  "key_quotes": null,
+  "knowledge_domains": null,
+  "relationships": null
+}
