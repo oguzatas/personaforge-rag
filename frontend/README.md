@@ -14,6 +14,8 @@ React-based frontend for the PersonaForge RAG system, providing an intuitive int
 
 ### Installation
 
+npm version v23.6.1
+
 ```bash
 npm install
 ```
